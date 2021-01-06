@@ -34,6 +34,7 @@ class Users(Base):
     password = Column(String)
 
     hotels = relationship("Hotels", back_populates="owner")
+    FavMenu = relationship("CustomerFavMenu", back_populates="owner")
 
 
 class Hotels(Base):
@@ -48,6 +49,9 @@ class Hotels(Base):
     city = Column(String, index = True)
 
     owner = relationship("Users", back_populates="hotels")
+    FavMenu = relationship("CustomerFavMenu", back_populates="hotels")
+    menu = relationship("Menu", back_populates="hotels")
+    
     
     
 class Menu(Base):
@@ -56,12 +60,17 @@ class Menu(Base):
     hotel_id = Column(Integer, ForeignKey("hotels.id"), unique=True)
     items = Column(JSON) 
     
+    hotels = relationship("Hotels", back_populates="menu")
+    
 
 class CustomerFavMenu(Base):
     __tablename__ = "FavMenu"
     id = Column(Integer, primary_key=True, index=True)
     user_id =Column(Integer, ForeignKey("users.id"))
     hotel_id = Column(Integer, ForeignKey("hotels.id"), unique=True)
+    
+    hotels = relationship("Hotels", back_populates="FavMenu")
+    owner = relationship("Users", back_populates="FavMenu")
     
     
     
